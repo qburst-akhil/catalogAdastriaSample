@@ -1,6 +1,7 @@
 'use strict';
 module.exports = {
     FILE_PREFIX : 'SALESFORCE_',
+    IMPORT_DIR : '/Import/',
     CSVS : {
         TITEM: 'TITEM',
         TGOODS: 'TGOODS',
@@ -37,6 +38,7 @@ module.exports = {
         TCLASSATTRIBUTE: 'TCLASSATTRIBUTE',
         TITEMCLASSATTRIBUTE: 'TITEMCLASSATTRIBUTE',
         TSHOPDISPCLASS: 'TSHOPDISPCLASS'
-    }
+    },
+    DWLD_FOLDER: 'adustria-csv'
 }
 
