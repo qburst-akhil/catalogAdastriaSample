@@ -20,12 +20,13 @@ function downloadFile(sftp, source, destination) {
       var arr = source.split('/')
       var fileName = arr[arr.length - 1];
       if (err) {
+        console.log('ERROR>>>>>>>>>>>> ', JSON.stringify(err));      
         resolve({
           file: fileName,
           error: err
         });
       }
-      resolve(fileName)
+      resolve({ file: fileName })
     });
   });
 }
