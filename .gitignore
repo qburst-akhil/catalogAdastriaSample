@@ -38,6 +38,8 @@ jspm_packages/
 
 .vscode/
 adustria-csv/
+**/*.csv
+**/*.CSV
 
 # TypeScript v1 declaration files
 typings/
