@@ -5,9 +5,22 @@ var express = require('express');
 
 var router = express.Router();
 
-var utils = require('../utils');
-var CONST = require('./constants');
-var counter = 0;
+const utils = require('../utils');
+const CONST = require('./constants');
+const unzipper = require('./unzipper');
+
+router.get('/unzip', (req, res, next) => {
+  var dir = utils.getDownloadDirectory();
+  unzipper.unzipFilesInDirectory(dir)
+    .then(result => {
+      console.log(`Success in then unzip ${result}`);
+      res.end('Succes');
+    })
+    .catch(err => {
+      console.log(`Fsilure in catch unzip ${err}`);
+      res.end('Failure');
+    });
+});
 /* GET home page. */
 router.get('/', function (req, res, next) {
   // Download file
@@ -24,7 +37,7 @@ router.get('/', function (req, res, next) {
         if (err) throw err;
 
         var filteredList = _.filter(list, file => {
-          return (file.filename.endsWith('.csv') || file.filename.endsWith('.CSV'))
+          return (file.filename.endsWith('.zip') || file.filename.endsWith('.ZIP'))
             && file.filename.startsWith('SALESFORCE_')
         });
         var groupedFileObject = groupFileObjectsByTableName(filteredList);
@@ -36,29 +49,37 @@ router.get('/', function (req, res, next) {
         console.log(`Map contains ${fileNameMap.size} file names`);
         console.log(`Start time ${new Date().getTime()}`);
 
-        try {
-          async.eachLimit(fileNameArray, fileNameArray.length, (fileName, callback) => {
-            console.log(`File name: ${fileName}`);
-            utils.downloadFile(sftp, CONST.IMPORT_DIR + fileName, `${dir}/${fileName}`)
-              .then(result => {
-                console.log(`Promise Success ${JSON.stringify(result)}`);
-                callback();
-              })
-              .catch(err => {
-                console.log(`Promise Failure ${err}`);
-                callback();
-              });
-          }, (err) => {
-            if (err) {
-              console.log(`Error ${err}`);
-            }
-            console.log(`connection.end()`);
-            console.log(`End time ${new Date().getTime()}`);
-            connection.end();
-          });
-        } catch (e) {
-          console.log(e);
-        }
+        // try {
+        //   async.eachLimit(fileNameArray, fileNameArray.length, (fileName, callback) => {
+        //     console.log(`File name: ${fileName}`);
+        //     utils.downloadFile(sftp, CONST.IMPORT_DIR + fileName, `${dir}/${fileName}`)
+        //       .then(result => {
+        //         console.log(`Promise Success ${JSON.stringify(result)}`);
+        //         callback();
+        //       })
+        //       .catch(err => {
+        //         console.log(`Promise Failure ${err}`);
+        //         callback();
+        //       });
+        //   }, (err) => {
+        //     if (err) {
+        //       console.log(`Error ${err}`);
+        //       throw err;
+        //     }
+        //     console.log(`connection.end()`);
+        //     console.log(`End time ${new Date().getTime()}`);
+        //     connection.end();
+        //     unzipper.unzipFilesInDirectory(dir)
+        //       .then(result => {
+        //         console.log(`Success in then unzip ${result}`);
+        //       })
+        //       .catch(err => {
+        //         console.log(`Fsilure in catch unzip ${err}`);
+        //       });
+        //   });
+        // } catch (e) {
+        //   console.log(e);
+        // }
 
         // utils.downloadFile(sftp, CONST.IMPORT_DIR + file,
         //   `${dir}/${file}`)
